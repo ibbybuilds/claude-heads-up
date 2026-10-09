@@ -1,0 +1,13 @@
+{
+  "name": "claude-heads-up",
+  "version": "0.0.0-dev",
+  "description": "Pauses your video and brings Claude Code to the front when it needs you, then resumes when you reply.",
+  "author": {
+    "name": "ibbybuilds",
+    "url": "https://github.com/ibbybuilds"
+  },
+  "homepage": "https://github.com/ibbybuilds/claude-heads-up",
+  "repository": "https://github.com/ibbybuilds/claude-heads-up",
+  "license": "MIT",
+  "keywords": ["notifications", "focus", "media", "attention", "hooks", "windows"]
+}

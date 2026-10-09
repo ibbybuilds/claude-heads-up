@@ -1,0 +1,22 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "claude-heads-up",
+  "description": "Get your attention back when Claude Code needs you.",
+  "owner": {
+    "name": "ibbybuilds",
+    "url": "https://github.com/ibbybuilds"
+  },
+  "plugins": [
+    {
+      "name": "claude-heads-up",
+      "description": "Pauses your video and brings Claude Code to the front when it needs you, then resumes when you reply.",
+      "category": "productivity",
+      "source": {
+        "source": "github",
+        "repo": "ibbybuilds/claude-heads-up",
+        "ref": "release"
+      },
+      "homepage": "https://github.com/ibbybuilds/claude-heads-up"
+    }
+  ]
+}

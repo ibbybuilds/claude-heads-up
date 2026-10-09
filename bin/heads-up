@@ -1,0 +1,29 @@
+#!/usr/bin/env sh
+# Runs the prebuilt binary for this OS and CPU from dist/. Hooks call this
+# through bash on every OS (Git Bash on Windows). A missing binary exits 0 so
+# an unsupported machine never breaks Claude Code.
+
+root="$(cd "$(dirname "$0")/.." && pwd)"
+
+case "$(uname -s)" in
+  Darwin) os=darwin ;;
+  Linux) os=linux ;;
+  MINGW* | MSYS* | CYGWIN*) os=windows ;;
+  *) exit 0 ;;
+esac
+
+case "$(uname -m)" in
+  x86_64 | amd64) arch=amd64 ;;
+  arm64 | aarch64) arch=arm64 ;;
+  *) exit 0 ;;
+esac
+
+bin="$root/dist/heads-up-$os-$arch"
+[ "$os" = windows ] && bin="$bin.exe"
+[ -f "$bin" ] || exit 0
+
+# Never exec, not even implicitly: under Git Bash it detaches the binary from
+# its Windows parent process, and host window detection walks that chain.
+# The trailing `exit` stops bash from turning the last command into an exec.
+"$bin" "$@"
+exit $?

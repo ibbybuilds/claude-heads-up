@@ -1,0 +1,42 @@
+{
+  "description": "Alert when Claude needs you; resume media when you reply.",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "shell": "bash", "async": true, "command": "bash \"${CLAUDE_PLUGIN_ROOT}/bin/heads-up\" hook alert" }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "permission_prompt|elicitation_dialog|elicitation_url_dialog|agent_needs_input",
+        "hooks": [
+          { "type": "command", "shell": "bash", "async": true, "command": "bash \"${CLAUDE_PLUGIN_ROOT}/bin/heads-up\" hook alert" }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "AskUserQuestion",
+        "hooks": [
+          { "type": "command", "shell": "bash", "async": true, "command": "bash \"${CLAUDE_PLUGIN_ROOT}/bin/heads-up\" hook alert" }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          { "type": "command", "shell": "bash", "async": true, "command": "bash \"${CLAUDE_PLUGIN_ROOT}/bin/heads-up\" hook resume" }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          { "type": "command", "shell": "bash", "async": true, "command": "bash \"${CLAUDE_PLUGIN_ROOT}/bin/heads-up\" hook resume" }
+        ]
+      }
+    ]
+  }
+}
