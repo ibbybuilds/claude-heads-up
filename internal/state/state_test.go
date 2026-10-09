@@ -52,7 +52,7 @@ func TestPauseExpires(t *testing.T) {
 	if err := s.SavePause(Pause{OwnerSession: "a", PausedAt: c.t}); err != nil {
 		t.Fatal(err)
 	}
-	c.t =c.t.Add(PauseTTL + time.Minute)
+	c.t = c.t.Add(PauseTTL + time.Minute)
 	got, err := s.LoadPause()
 	if err != nil || got != nil {
 		t.Fatalf("expired pause: got %+v, %v", got, err)
