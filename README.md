@@ -67,7 +67,7 @@ Desktop alerts can't reach you if you're scrolling on your phone. ntfy can:
 }
 ```
 
-Pushes go out at ntfy's `urgent` priority. On Android that means a banner over whatever app you're in and a long vibration. To make it truly hard to ignore, open the ntfy app's settings and turn on "Keep alerting for highest priority". The sound then repeats until you tap the notification. On Android, also turn off battery optimization for ntfy so pushes arrive instantly.
+Pushes go out at ntfy's `urgent` priority. On Android that means a banner over whatever app you're in and a long vibration. To make it louder on Android, open ntfy, go to Settings, then Channel settings, and open the max priority channel. Give it a long ringtone as its sound, turn on pop on screen, and allow it to override Do Not Disturb if you want. Also turn off battery optimization for ntfy so pushes arrive instantly.
 
 Self-hosted ntfy works too. Set `server`, and put an access token in `token` or the `HEADS_UP_NTFY_TOKEN` environment variable.
 
