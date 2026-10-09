@@ -14,7 +14,7 @@ Then point a Claude Code session at the repo as a plugin (see CONTRIBUTING.md).
 
 - [ ] YouTube in Chrome: alert pauses it, reply resumes it
 - [ ] YouTube in Brave or Edge: same
-- [ ] Instagram reels in the browser: same
+- [x] Instagram reels in Brave (with sound on): same
 - [ ] Spotify desktop: same
 - [ ] Pause a song yourself, then trigger an alert and reply: the song stays paused
 - [ ] Claude window in front when the alert fires: nothing happens

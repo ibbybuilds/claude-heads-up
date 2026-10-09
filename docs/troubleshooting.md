@@ -21,7 +21,9 @@ If you're looking at the Claude window when it finishes, nothing happens on purp
 
 The media has to show up in the Windows media flyout (press a volume key and look for it). If it isn't there, Windows can't control it.
 
-Some sites don't register with that API. In browsers, it depends on the site using the Media Session API. YouTube does.
+Muted video never shows up there. Instagram starts reels muted, so a reel only becomes pausable after you turn the sound on.
+
+Chromium browsers (Chrome, Brave, Edge) report one active media session per browser to Windows. If an old paused YouTube tab holds it, a reel playing in another tab can be invisible. Closing the old tab fixes it.
 
 ## Video doesn't resume
 
