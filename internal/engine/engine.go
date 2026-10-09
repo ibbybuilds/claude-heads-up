@@ -33,6 +33,8 @@ type Engine struct {
 	Config   config.Config
 	Log      *slog.Logger
 	Now      func() time.Time
+	// DefaultSound plays when the config names no sound file.
+	DefaultSound string
 	// PID is where the host window search starts: the hook process itself.
 	PID int
 }
@@ -77,7 +79,11 @@ func (e *Engine) Alert(ctx context.Context, ev hookinput.Event, force bool) {
 	}
 	if e.Config.Sound.Enabled {
 		e.step(ctx, log, "play sound", stepTimeout, func(ctx context.Context) error {
-			return e.Platform.PlaySound(ctx, e.Config.Sound.File)
+			path := e.Config.Sound.File
+			if path == "" {
+				path = e.DefaultSound
+			}
+			return e.Platform.PlaySound(ctx, path)
 		})
 	}
 	if e.Config.Focus.Enabled && hostErr == nil {
@@ -87,7 +93,9 @@ func (e *Engine) Alert(ctx context.Context, ev hookinput.Event, force bool) {
 	}
 	if e.Config.Toast.Enabled {
 		e.step(ctx, log, "toast", mediaTimeout, func(ctx context.Context) error {
-			return e.Platform.Toast(ctx, title, body)
+			return e.Platform.Toast(ctx, platform.Notification{
+				Title: title, Body: body, Sticky: e.Config.Toast.Sticky,
+			})
 		})
 	}
 	if e.Notifier != nil {

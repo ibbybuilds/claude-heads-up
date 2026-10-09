@@ -5,10 +5,10 @@ You ask Claude Code to do something, switch to YouTube or Instagram while it wor
 claude-heads-up is a Claude Code plugin that fixes this. When Claude finishes or needs permission, it:
 
 1. pauses whatever video or music is playing
-2. plays your notification sound
+2. plays a loud two-burst chime, built to be hard to tune out
 3. brings the terminal or Claude window to the front
-4. shows a toast with the project name
-5. optionally pings your phone through [ntfy](https://ntfy.sh)
+4. shows a toast that stays on screen until you close it
+5. optionally sends an urgent push to your phone through [ntfy](https://ntfy.sh)
 
 When you reply, it resumes the media it paused. Only that media. If you paused a song yourself, it stays paused.
 
@@ -66,6 +66,8 @@ Desktop alerts can't reach you if you're scrolling on your phone. ntfy can:
   "ntfy": { "enabled": true, "topic": "heads-up-k3v9q2xw7m" }
 }
 ```
+
+Pushes go out at ntfy's `urgent` priority. On Android that means a banner over whatever app you're in and a long vibration. To make it truly hard to ignore, open the ntfy app's settings and turn on "Keep alerting for highest priority". The sound then repeats until you tap the notification. On Android, also turn off battery optimization for ntfy so pushes arrive instantly.
 
 Self-hosted ntfy works too. Set `server`, and put an access token in `token` or the `HEADS_UP_NTFY_TOKEN` environment variable.
 

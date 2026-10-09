@@ -17,6 +17,14 @@ type Window struct {
 	Handle uintptr
 }
 
+// Notification is a desktop toast. Sticky asks the OS to keep it on screen
+// until dismissed, where the OS supports that.
+type Notification struct {
+	Title  string
+	Body   string
+	Sticky bool
+}
+
 // MediaSession is one media player the backend paused. Title is part of the
 // identity because browsers report every tab under the same app ID.
 type MediaSession struct {
@@ -40,7 +48,7 @@ type Platform interface {
 
 	// PlaySound plays path, or the platform's default alert sound if empty.
 	PlaySound(ctx context.Context, path string) error
-	Toast(ctx context.Context, title, body string) error
+	Toast(ctx context.Context, n Notification) error
 }
 
 // Unsupported is embedded by backends that are not implemented yet, so a new
@@ -55,4 +63,4 @@ func (Unsupported) PauseMedia(context.Context) ([]MediaSession, error) {
 }
 func (Unsupported) ResumeMedia(context.Context, []MediaSession) error { return ErrUnsupported }
 func (Unsupported) PlaySound(context.Context, string) error           { return ErrUnsupported }
-func (Unsupported) Toast(context.Context, string, string) error       { return ErrUnsupported }
+func (Unsupported) Toast(context.Context, Notification) error         { return ErrUnsupported }

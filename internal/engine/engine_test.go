@@ -23,6 +23,8 @@ type fakePlatform struct {
 	failSound  bool
 	panicFocus bool
 	noHost     bool
+	soundPath  string
+	toast      platform.Notification
 }
 
 func (f *fakePlatform) Name() string { return "fake" }
@@ -57,16 +59,18 @@ func (f *fakePlatform) ResumeMedia(_ context.Context, s []platform.MediaSession)
 	return nil
 }
 
-func (f *fakePlatform) PlaySound(context.Context, string) error {
+func (f *fakePlatform) PlaySound(_ context.Context, path string) error {
 	f.calls = append(f.calls, "sound")
+	f.soundPath = path
 	if f.failSound {
 		return errors.New("no audio device")
 	}
 	return nil
 }
 
-func (f *fakePlatform) Toast(context.Context, string, string) error {
+func (f *fakePlatform) Toast(_ context.Context, n platform.Notification) error {
 	f.calls = append(f.calls, "toast")
+	f.toast = n
 	return platform.ErrUnsupported
 }
 
@@ -98,6 +102,8 @@ func newHarness(t *testing.T) *harness {
 		Config:   config.Default(),
 		Log:      slog.New(slog.NewTextHandler(io.Discard, nil)),
 		Now:      now,
+
+		DefaultSound: "chime.wav",
 	}
 	return h
 }
@@ -254,6 +260,25 @@ func TestNoHostWindowSkipsFocusOnly(t *testing.T) {
 	want := []string{"pause", "sound", "toast"}
 	if !slices.Equal(h.p.calls, want) {
 		t.Errorf("calls = %v, want %v", h.p.calls, want)
+	}
+}
+
+func TestSoundAndToastSettings(t *testing.T) {
+	h := newHarness(t)
+	h.e.Alert(context.Background(), stop("a"), false)
+	if h.p.soundPath != "chime.wav" {
+		t.Errorf("default sound = %q, want the built-in chime", h.p.soundPath)
+	}
+	if !h.p.toast.Sticky || h.p.toast.Title != "my-app" {
+		t.Errorf("toast = %+v", h.p.toast)
+	}
+
+	h = newHarness(t)
+	h.e.Config.Sound.File = "custom.wav"
+	h.e.Config.Toast.Sticky = false
+	h.e.Alert(context.Background(), stop("a"), false)
+	if h.p.soundPath != "custom.wav" || h.p.toast.Sticky {
+		t.Errorf("sound=%q toast=%+v", h.p.soundPath, h.p.toast)
 	}
 }
 

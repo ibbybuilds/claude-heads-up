@@ -11,6 +11,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/ibbybuilds/claude-heads-up/internal/chime"
 	"github.com/ibbybuilds/claude-heads-up/internal/config"
 	"github.com/ibbybuilds/claude-heads-up/internal/engine"
 	"github.com/ibbybuilds/claude-heads-up/internal/hookinput"
@@ -205,11 +206,17 @@ func setup() (*engine.Engine, func(), error) {
 	}
 	if cfg.Ntfy.Enabled {
 		app.Notifier = &ntfy.Client{
-			Server: cfg.Ntfy.Server,
-			Topic:  cfg.Ntfy.Topic,
-			Token:  cfg.Ntfy.Token,
-			HTTP:   &http.Client{},
+			Server:   cfg.Ntfy.Server,
+			Topic:    cfg.Ntfy.Topic,
+			Token:    cfg.Ntfy.Token,
+			Priority: cfg.Ntfy.Priority,
+			HTTP:     &http.Client{},
 		}
+	}
+	if path, err := chime.EnsureFile(stateDir); err != nil {
+		log.Warn("write default chime", "err", err)
+	} else {
+		app.DefaultSound = path
 	}
 	return app, func() { closer.Close() }, nil
 }

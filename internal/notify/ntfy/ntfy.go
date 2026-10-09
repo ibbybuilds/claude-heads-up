@@ -14,7 +14,10 @@ type Client struct {
 	Server string
 	Topic  string
 	Token  string
-	HTTP   *http.Client
+	// Priority is an ntfy priority name. "urgent" makes Android show a
+	// heads-up banner over the current app and vibrate longer.
+	Priority string
+	HTTP     *http.Client
 }
 
 func (c *Client) Send(ctx context.Context, title, body string) error {
@@ -25,7 +28,9 @@ func (c *Client) Send(ctx context.Context, title, body string) error {
 	}
 	req.Header.Set("Title", title)
 	req.Header.Set("Tags", "bell")
-	req.Header.Set("Priority", "high")
+	if c.Priority != "" {
+		req.Header.Set("Priority", c.Priority)
+	}
 	if c.Token != "" {
 		req.Header.Set("Authorization", "Bearer "+c.Token)
 	}

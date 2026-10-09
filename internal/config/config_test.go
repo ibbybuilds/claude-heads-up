@@ -39,6 +39,7 @@ func TestParseWarnings(t *testing.T) {
 		{"unknown field", `{"volume": 3}`, "unknown field"},
 		{"negative throttle", `{"throttleSeconds": -1}`, "negative"},
 		{"ntfy without topic", `{"ntfy": {"enabled": true}}`, "topic is empty"},
+		{"bad ntfy priority", `{"ntfy": {"priority": "loud"}}`, "not one of"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -10,22 +10,23 @@ import (
 )
 
 func TestSend(t *testing.T) {
-	var gotPath, gotTitle, gotAuth, gotBody string
+	var gotPath, gotTitle, gotAuth, gotBody, gotPriority string
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		gotPath = r.URL.Path
 		gotTitle = r.Header.Get("Title")
 		gotAuth = r.Header.Get("Authorization")
+		gotPriority = r.Header.Get("Priority")
 		b, _ := io.ReadAll(r.Body)
 		gotBody = string(b)
 	}))
 	defer srv.Close()
 
-	c := &Client{Server: srv.URL + "/", Topic: "my-topic", Token: "tk"}
+	c := &Client{Server: srv.URL + "/", Topic: "my-topic", Token: "tk", Priority: "urgent"}
 	if err := c.Send(context.Background(), "my-app", "Claude finished"); err != nil {
 		t.Fatal(err)
 	}
-	if gotPath != "/my-topic" || gotTitle != "my-app" || gotAuth != "Bearer tk" || gotBody != "Claude finished" {
-		t.Errorf("path=%q title=%q auth=%q body=%q", gotPath, gotTitle, gotAuth, gotBody)
+	if gotPath != "/my-topic" || gotTitle != "my-app" || gotAuth != "Bearer tk" || gotBody != "Claude finished" || gotPriority != "urgent" {
+		t.Errorf("path=%q title=%q auth=%q body=%q priority=%q", gotPath, gotTitle, gotAuth, gotBody, gotPriority)
 	}
 }
 

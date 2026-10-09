@@ -10,6 +10,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"slices"
 )
 
 const (
@@ -25,7 +26,7 @@ type Config struct {
 	Media           Toggle   `json:"media"`
 	Sound           Sound    `json:"sound"`
 	Focus           Toggle   `json:"focus"`
-	Toast           Toggle   `json:"toast"`
+	Toast           Toast    `json:"toast"`
 	Ntfy            Ntfy     `json:"ntfy"`
 }
 
@@ -39,17 +40,26 @@ type Toggle struct {
 	Enabled bool `json:"enabled"`
 }
 
+type Toast struct {
+	Enabled bool `json:"enabled"`
+	Sticky  bool `json:"sticky"`
+}
+
 type Sound struct {
 	Enabled bool   `json:"enabled"`
 	File    string `json:"file"`
 }
 
 type Ntfy struct {
-	Enabled bool   `json:"enabled"`
-	Server  string `json:"server"`
-	Topic   string `json:"topic"`
-	Token   string `json:"token"`
+	Enabled  bool   `json:"enabled"`
+	Server   string `json:"server"`
+	Topic    string `json:"topic"`
+	Token    string `json:"token"`
+	Priority string `json:"priority"`
 }
+
+// ntfy priority names, lowest to highest.
+var ntfyPriorities = []string{"min", "low", "default", "high", "urgent"}
 
 func Default() Config {
 	return Config{
@@ -59,8 +69,8 @@ func Default() Config {
 		Media:           Toggle{Enabled: true},
 		Sound:           Sound{Enabled: true},
 		Focus:           Toggle{Enabled: true},
-		Toast:           Toggle{Enabled: true},
-		Ntfy:            Ntfy{Server: defaultServer},
+		Toast:           Toast{Enabled: true, Sticky: true},
+		Ntfy:            Ntfy{Server: defaultServer, Priority: "urgent"},
 	}
 }
 
@@ -113,6 +123,10 @@ func finalize(cfg Config, warnings []string) (Config, []string) {
 	}
 	if cfg.Ntfy.Server == "" {
 		cfg.Ntfy.Server = defaultServer
+	}
+	if !slices.Contains(ntfyPriorities, cfg.Ntfy.Priority) {
+		warnings = append(warnings, fmt.Sprintf("ntfy.priority %q is not one of %v (using urgent)", cfg.Ntfy.Priority, ntfyPriorities))
+		cfg.Ntfy.Priority = Default().Ntfy.Priority
 	}
 	if cfg.Ntfy.Enabled && cfg.Ntfy.Topic == "" {
 		warnings = append(warnings, "ntfy is enabled but topic is empty (phone push disabled)")

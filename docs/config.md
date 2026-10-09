@@ -26,12 +26,13 @@ You only need the keys you want to change. Anything you leave out keeps its defa
   "media": { "enabled": true },
   "sound": { "enabled": true, "file": "" },
   "focus": { "enabled": true },
-  "toast": { "enabled": true },
+  "toast": { "enabled": true, "sticky": true },
   "ntfy": {
     "enabled": false,
     "server": "https://ntfy.sh",
     "topic": "",
-    "token": ""
+    "token": "",
+    "priority": "urgent"
   }
 }
 ```
@@ -50,17 +51,21 @@ You only need the keys you want to change. Anything you leave out keeps its defa
 
 `media.enabled` pauses playing media on alert and resumes it when you reply.
 
-`sound.file` is a path to a `.wav` file. Empty means your system notification sound.
+`sound.file` is a path to a `.wav` file. Empty means the built-in chime: two fast rising arpeggios at full volume. Point it at `C:\Windows\Media\Windows Notify System Generic.wav` if you want the quiet Windows sound instead.
 
 `focus.enabled` brings the Claude window to the front.
 
 `toast.enabled` shows a desktop notification. The Claude desktop app has its own notifications, so you may want this off there.
+
+`toast.sticky` keeps the toast on screen until you close it. Set it to `false` for a normal toast that slides away.
 
 `ntfy.enabled` sends a push to your phone. Needs `topic`.
 
 `ntfy.server` is the ntfy server. Change it if you self-host.
 
 `ntfy.topic` is the topic your phone subscribes to. Pick a long random name.
+
+`ntfy.priority` is one of `min`, `low`, `default`, `high`, `urgent`. `urgent` shows a banner over the current app on Android and is time-sensitive on iOS.
 
 `ntfy.token` is an access token for servers with access control. The `HEADS_UP_NTFY_TOKEN` environment variable overrides it, so you can keep the token out of the file.
 
