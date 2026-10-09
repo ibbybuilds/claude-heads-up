@@ -1,0 +1,28 @@
+version: "2"
+
+linters:
+  default: standard
+  enable:
+    - misspell
+    - unconvert
+  settings:
+    errcheck:
+      exclude-functions:
+        # Best-effort cleanup where a failure changes nothing for the user.
+        - os.Remove
+        - os.Rename
+        - (*os.File).Close
+        - (io.Closer).Close
+        - os.Chtimes
+        - os.WriteFile
+        # CLI output to the terminal.
+        - fmt.Fprintf
+        - fmt.Fprintln
+        - fmt.Fprint
+        # LazyProc.Call always returns GetLastError as its error, even on
+        # success. The real result is r1, which the code checks where it matters.
+        - (*golang.org/x/sys/windows.LazyProc).Call
+        - golang.org/x/sys/windows.CloseHandle
+        - golang.org/x/sys/windows.GetWindowThreadProcessId
+        # Only errors when the callback stops enumeration, which ours never does.
+        - golang.org/x/sys/windows.EnumWindows
