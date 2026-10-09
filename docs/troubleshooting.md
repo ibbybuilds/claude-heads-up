@@ -1,0 +1,38 @@
+# Troubleshooting
+
+Start with these two commands. The binary is in the plugin's `dist` folder, or run it through the launcher at `bin/heads-up`.
+
+```bash
+heads-up doctor   # what it detected, where the config and log are
+heads-up test     # fire an alert now, ignoring triggers and focus
+```
+
+Logs go to `%LOCALAPPDATA%\claude-heads-up\heads-up.log` on Windows. Set `HEADS_UP_DEBUG=1` before starting Claude Code to log every step.
+
+## Nothing happens at all
+
+Check that Claude Code loaded the hooks. Run `/hooks` in Claude Code and look for `heads-up` entries. If they're missing, reinstall the plugin and restart Claude Code.
+
+On Windows, check that Git for Windows is installed. The hooks run through Git Bash.
+
+If you're looking at the Claude window when it finishes, nothing happens on purpose. Set `skipWhenFocused` to `false` to change that.
+
+## Video doesn't pause
+
+The media has to show up in the Windows media flyout (press a volume key and look for it). If it isn't there, Windows can't control it.
+
+Some sites don't register with that API. In browsers, it depends on the site using the Media Session API. YouTube does.
+
+## Video doesn't resume
+
+Only a reply in the same Claude session resumes the media. If you replied in a different session, the video stays paused on purpose.
+
+Declining a permission request fires no hook, so the media stays paused until your next message.
+
+## Window doesn't come to the front
+
+Windows blocks background programs from stealing focus in some situations. The log will say `windows refused to focus`. The toast and sound still work. Click the toast to switch.
+
+## The toast says "Windows PowerShell"
+
+Windows only shows toasts from registered apps. claude-heads-up borrows PowerShell's registration so it doesn't need an installer.
