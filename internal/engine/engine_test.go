@@ -25,6 +25,8 @@ type fakePlatform struct {
 	noHost     bool
 	soundPath  string
 	toast      platform.Notification
+
+	toastUnsupported bool
 }
 
 func (f *fakePlatform) Name() string { return "fake" }
@@ -68,10 +70,18 @@ func (f *fakePlatform) PlaySound(_ context.Context, path string) error {
 	return nil
 }
 
+func (f *fakePlatform) ClearToast(_ context.Context, id string) error {
+	f.calls = append(f.calls, "clear toast:"+id)
+	return nil
+}
+
 func (f *fakePlatform) Toast(_ context.Context, n platform.Notification) error {
 	f.calls = append(f.calls, "toast")
 	f.toast = n
-	return platform.ErrUnsupported
+	if f.toastUnsupported {
+		return platform.ErrUnsupported
+	}
+	return nil
 }
 
 type fakeNotifier struct{ sent []string }
@@ -152,6 +162,38 @@ func TestResumeIgnoresOtherSession(t *testing.T) {
 	}
 	if !h.e.Store.HasPause() {
 		t.Error("pause record lost")
+	}
+}
+
+func TestResumeClearsOwnToastOnce(t *testing.T) {
+	h := newHarness(t)
+	h.e.Config.Media.Enabled = false
+	h.e.Alert(context.Background(), stop("a"), false)
+	if h.p.toast.ID != "a" {
+		t.Fatalf("toast ID = %q, want the session ID", h.p.toast.ID)
+	}
+
+	h.p.calls = nil
+	h.e.Resume(context.Background(), prompt("b"))
+	if len(h.p.calls) != 0 {
+		t.Errorf("reply in b touched a's toast: %v", h.p.calls)
+	}
+	h.e.Resume(context.Background(), prompt("a"))
+	h.e.Resume(context.Background(), prompt("a"))
+	if !slices.Equal(h.p.calls, []string{"clear toast:a"}) {
+		t.Errorf("calls = %v, want one clear for a", h.p.calls)
+	}
+}
+
+func TestFailedToastIsNotCleared(t *testing.T) {
+	h := newHarness(t)
+	h.p.toastUnsupported = true
+	h.e.Config.Media.Enabled = false
+	h.e.Alert(context.Background(), stop("a"), false)
+	h.p.calls = nil
+	h.e.Resume(context.Background(), prompt("a"))
+	if len(h.p.calls) != 0 {
+		t.Errorf("cleared a toast that was never shown: %v", h.p.calls)
 	}
 }
 

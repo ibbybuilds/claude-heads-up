@@ -17,9 +17,11 @@ type Window struct {
 	Handle uintptr
 }
 
-// Notification is a desktop toast. Sticky asks the OS to keep it on screen
-// until dismissed, where the OS supports that.
+// Notification is a desktop toast. ID groups toasts: a new toast with the
+// same ID replaces the old one, and ClearToast removes it. Sticky asks the OS
+// to keep it on screen until dismissed, where the OS supports that.
 type Notification struct {
+	ID     string
 	Title  string
 	Body   string
 	Sticky bool
@@ -49,6 +51,7 @@ type Platform interface {
 	// PlaySound plays path, or the platform's default alert sound if empty.
 	PlaySound(ctx context.Context, path string) error
 	Toast(ctx context.Context, n Notification) error
+	ClearToast(ctx context.Context, id string) error
 }
 
 // Unsupported is embedded by backends that are not implemented yet, so a new
@@ -64,3 +67,4 @@ func (Unsupported) PauseMedia(context.Context) ([]MediaSession, error) {
 func (Unsupported) ResumeMedia(context.Context, []MediaSession) error { return ErrUnsupported }
 func (Unsupported) PlaySound(context.Context, string) error           { return ErrUnsupported }
 func (Unsupported) Toast(context.Context, Notification) error         { return ErrUnsupported }
+func (Unsupported) ClearToast(context.Context, string) error          { return ErrUnsupported }

@@ -57,7 +57,9 @@ You only need the keys you want to change. Anything you leave out keeps its defa
 
 `toast.enabled` shows a desktop notification. The Claude desktop app has its own notifications, so you may want this off there.
 
-`toast.sticky` keeps the toast on screen until you close it. Set it to `false` for a normal toast that slides away.
+Each Claude session has at most one toast. A new alert replaces it, and replying in that session removes it.
+
+`toast.sticky` keeps the toast on screen until you close it or reply. Set it to `false` for a normal toast that slides away.
 
 `ntfy.enabled` sends a push to your phone. Needs `topic`.
 

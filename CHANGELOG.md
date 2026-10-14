@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.1.3
+
+- Toasts no longer stack: a new alert replaces the session's old toast, and replying in that session removes it
+- Hook input with a UTF-8 byte order mark is accepted
+
 ## v0.1.2
 
 - Alert even when the Claude window is focused. `skipWhenFocused` is now off by default, because a focused window does not mean you are looking at it on a multi-monitor setup or with a phone in hand

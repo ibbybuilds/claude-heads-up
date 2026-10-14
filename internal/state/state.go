@@ -19,6 +19,7 @@ const (
 	pauseFile    = "paused.json"
 	throttleFile = "throttle.json"
 	lockFile     = "state.lock"
+	alertsDir    = "alerts"
 
 	// A pause older than this is from a crashed or closed session.
 	PauseTTL      = 6 * time.Hour
@@ -114,6 +115,35 @@ func (s *Store) ClearPause() error {
 		return nil
 	}
 	return err
+}
+
+// MarkAlert records that session has an unanswered alert, so the next resume
+// knows there is a toast to clear. One empty file per session keeps the check
+// a single stat, cheap enough for PostToolUse.
+func (s *Store) MarkAlert(session string) error {
+	dir := filepath.Join(s.dir, alertsDir)
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		return err
+	}
+	return os.WriteFile(filepath.Join(dir, safeName(session)), nil, 0o600)
+}
+
+// TakeAlert reports whether session had an unanswered alert and clears it.
+func (s *Store) TakeAlert(session string) bool {
+	return os.Remove(filepath.Join(s.dir, alertsDir, safeName(session))) == nil
+}
+
+// safeName keeps a session ID from escaping the alerts dir. Claude session
+// IDs are UUIDs, so this only matters for malformed input.
+func safeName(session string) string {
+	out := []rune(session)
+	for i, r := range out {
+		ok := r >= 'a' && r <= 'z' || r >= 'A' && r <= 'Z' || r >= '0' && r <= '9' || r == '-' || r == '_'
+		if !ok {
+			out[i] = '_'
+		}
+	}
+	return string(out)
 }
 
 // AllowAlert reports whether session may alert now, and records the attempt

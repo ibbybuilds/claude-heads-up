@@ -94,9 +94,13 @@ func (e *Engine) Alert(ctx context.Context, ev hookinput.Event, force bool) {
 	}
 	if e.Config.Toast.Enabled {
 		e.step(ctx, log, "toast", mediaTimeout, func(ctx context.Context) error {
-			return e.Platform.Toast(ctx, platform.Notification{
-				Title: title, Body: body, Sticky: e.Config.Toast.Sticky,
+			err := e.Platform.Toast(ctx, platform.Notification{
+				ID: ev.SessionID, Title: title, Body: body, Sticky: e.Config.Toast.Sticky,
 			})
+			if err != nil {
+				return err
+			}
+			return e.Store.MarkAlert(ev.SessionID)
 		})
 	}
 	if e.Notifier != nil {
@@ -106,18 +110,27 @@ func (e *Engine) Alert(ctx context.Context, ev hookinput.Event, force bool) {
 	}
 }
 
-// Resume plays the media an alert paused, but only for a reply in the session
-// that paused it. A reply in another session must not restart the video.
+// Resume undoes an alert for the session the user replied in: it clears that
+// session's toast and plays the media the alert paused. A reply in another
+// session must not restart the video.
 func (e *Engine) Resume(ctx context.Context, ev hookinput.Event) {
-	if !e.Config.Media.Enabled || !e.Store.HasPause() {
-		return
-	}
 	log := e.Log.With("session", ev.SessionID, "event", ev.HookEventName)
 
+	if e.Store.TakeAlert(ev.SessionID) {
+		e.step(ctx, log, "clear toast", mediaTimeout, func(ctx context.Context) error {
+			return e.Platform.ClearToast(ctx, ev.SessionID)
+		})
+	}
+	if e.Config.Media.Enabled && e.Store.HasPause() {
+		e.resumeMedia(ctx, log, ev.SessionID)
+	}
+}
+
+func (e *Engine) resumeMedia(ctx context.Context, log *slog.Logger, session string) {
 	var media []platform.MediaSession
 	err := e.Store.WithLock(func() error {
 		p, err := e.Store.LoadPause()
-		if err != nil || p == nil || p.OwnerSession != ev.SessionID {
+		if err != nil || p == nil || p.OwnerSession != session {
 			return err
 		}
 		media = p.Media

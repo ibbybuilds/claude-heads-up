@@ -80,6 +80,38 @@ func TestAllowAlertThrottles(t *testing.T) {
 	}
 }
 
+func TestAlertMarkers(t *testing.T) {
+	s, _ := newTestStore(t)
+	if s.TakeAlert("a") {
+		t.Fatal("TakeAlert true before MarkAlert")
+	}
+	if err := s.MarkAlert("a"); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.MarkAlert("a"); err != nil {
+		t.Fatalf("second mark: %v", err)
+	}
+	if s.TakeAlert("b") {
+		t.Error("other session's marker taken")
+	}
+	if !s.TakeAlert("a") {
+		t.Error("marker missing")
+	}
+	if s.TakeAlert("a") {
+		t.Error("marker taken twice")
+	}
+}
+
+func TestSafeName(t *testing.T) {
+	if got := safeName("../../etc/x"); got != "______etc_x" {
+		t.Errorf("safeName = %q", got)
+	}
+	id := "205e9e0f-2ef1-4da9-8ae4-112e26c60770"
+	if safeName(id) != id {
+		t.Error("UUID changed")
+	}
+}
+
 func TestWithLock(t *testing.T) {
 	s, _ := newTestStore(t)
 	err := s.WithLock(func() error {

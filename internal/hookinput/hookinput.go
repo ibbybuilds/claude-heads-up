@@ -2,6 +2,7 @@
 package hookinput
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -30,6 +31,8 @@ func Parse(r io.Reader) (Event, error) {
 	if err != nil {
 		return ev, fmt.Errorf("read hook input: %w", err)
 	}
+	// Windows PowerShell 5.1 prefixes piped text with a UTF-8 byte order mark.
+	data = bytes.TrimPrefix(data, []byte("\xef\xbb\xbf"))
 	if err := json.Unmarshal(data, &ev); err != nil {
 		return ev, fmt.Errorf("decode hook input: %w", err)
 	}

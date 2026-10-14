@@ -26,6 +26,13 @@ func TestParse(t *testing.T) {
 	}
 }
 
+func TestParseSkipsBOM(t *testing.T) {
+	ev, err := Parse(strings.NewReader("\ufeff" + `{"session_id":"abc"}`))
+	if err != nil || ev.SessionID != "abc" {
+		t.Fatalf("Parse with BOM = %+v, %v", ev, err)
+	}
+}
+
 func TestParseErrors(t *testing.T) {
 	if _, err := Parse(strings.NewReader(`{"cwd":"/x"}`)); !errors.Is(err, ErrNoSession) {
 		t.Errorf("missing session: got %v", err)
