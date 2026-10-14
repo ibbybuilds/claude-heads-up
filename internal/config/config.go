@@ -64,7 +64,9 @@ var ntfyPriorities = []string{"min", "low", "default", "high", "urgent"}
 func Default() Config {
 	return Config{
 		Triggers:        Triggers{Stop: true, Permission: true, Question: true},
-		SkipWhenFocused: true,
+		// Off by default: a focused window says nothing about where the user is
+		// looking when they have a second screen or a phone in hand.
+		SkipWhenFocused: false,
 		ThrottleSeconds: 2,
 		Media:           Toggle{Enabled: true},
 		Sound:           Sound{Enabled: true},

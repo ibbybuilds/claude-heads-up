@@ -12,8 +12,6 @@ claude-heads-up is a Claude Code plugin that fixes this. When Claude finishes or
 
 When you reply, it resumes the media it paused. Only that media. If you paused a song yourself, it stays paused.
 
-If you're already looking at the Claude window, it does nothing.
-
 Inspired by [SnapBack](https://github.com/teoobarca/snapback), which does this on macOS.
 
 ## Platform support

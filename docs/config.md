@@ -21,7 +21,7 @@ You only need the keys you want to change. Anything you leave out keeps its defa
     "permission": true,
     "question": true
   },
-  "skipWhenFocused": true,
+  "skipWhenFocused": false,
   "throttleSeconds": 2,
   "media": { "enabled": true },
   "sound": { "enabled": true, "file": "" },
@@ -45,7 +45,7 @@ You only need the keys you want to change. Anything you leave out keeps its defa
 
 `triggers.question` alerts when Claude asks you a question with the AskUserQuestion tool.
 
-`skipWhenFocused` does nothing when the window running this Claude session is already in front. Turn it off if you want the sound every time.
+`skipWhenFocused` skips the alert when the window running this Claude session is already in front. It is off by default, because with a second screen or a phone in your hand, a focused Claude window doesn't mean you're looking at it. Turn it on if you work on one screen and the alert annoys you.
 
 `throttleSeconds` ignores a second alert from the same session within this many seconds. Claude often fires two events back to back.
 

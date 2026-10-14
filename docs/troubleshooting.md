@@ -15,7 +15,7 @@ Check that Claude Code loaded the hooks. Run `/hooks` in Claude Code and look fo
 
 On Windows, check that Git for Windows is installed. The hooks run through Git Bash.
 
-If you're looking at the Claude window when it finishes, nothing happens on purpose. Set `skipWhenFocused` to `false` to change that.
+If you turned on `skipWhenFocused`, nothing happens while the Claude window is in front. That is on purpose.
 
 ## Video doesn't pause
 

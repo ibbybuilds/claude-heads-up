@@ -191,8 +191,18 @@ func TestAlertThrottled(t *testing.T) {
 	}
 }
 
+func TestAlertRunsWhenHostFocusedByDefault(t *testing.T) {
+	h := newHarness(t)
+	h.p.foreground = true
+	h.e.Alert(context.Background(), stop("a"), false)
+	if len(h.p.calls) == 0 {
+		t.Error("default config skipped the alert for a focused window")
+	}
+}
+
 func TestAlertSkippedWhenHostFocused(t *testing.T) {
 	h := newHarness(t)
+	h.e.Config.SkipWhenFocused = true
 	h.p.foreground = true
 	h.e.Alert(context.Background(), stop("a"), false)
 	if len(h.p.calls) != 0 || len(h.n.sent) != 0 {
@@ -202,6 +212,7 @@ func TestAlertSkippedWhenHostFocused(t *testing.T) {
 
 func TestForceIgnoresFocusAndTriggers(t *testing.T) {
 	h := newHarness(t)
+	h.e.Config.SkipWhenFocused = true
 	h.p.foreground = true
 	h.e.Config.Triggers = config.Triggers{}
 	h.e.Alert(context.Background(), stop("a"), true)

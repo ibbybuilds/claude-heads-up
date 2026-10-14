@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.2
+
+- Alert even when the Claude window is focused. `skipWhenFocused` is now off by default, because a focused window does not mean you are looking at it on a multi-monitor setup or with a phone in hand
+
 ## v0.1.1
 
 - Install over HTTPS, so users without a GitHub SSH key can install

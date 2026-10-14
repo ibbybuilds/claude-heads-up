@@ -17,7 +17,7 @@ Then point a Claude Code session at the repo as a plugin (see CONTRIBUTING.md).
 - [x] Instagram reels in Brave (with sound on): same
 - [ ] Spotify desktop: same
 - [ ] Pause a song yourself, then trigger an alert and reply: the song stays paused
-- [ ] Claude window in front when the alert fires: nothing happens
+- [ ] Claude window in front when the alert fires: alert still runs (and nothing happens with `skipWhenFocused: true`)
 - [ ] Focus works from Windows Terminal, VS Code terminal and the Claude desktop app
 - [ ] Minimized window gets restored
 - [ ] Two sessions: alert in A, reply in B, media stays paused. Reply in A resumes it
