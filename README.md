@@ -7,7 +7,7 @@ claude-heads-up is a Claude Code plugin that fixes this. When Claude finishes or
 1. pauses whatever video or music is playing
 2. plays a loud two-burst chime, built to be hard to tune out
 3. brings the terminal or Claude window to the front
-4. shows a toast that stays on screen until you close it
+4. shows a toast with the project name
 5. optionally sends an urgent push to your phone through [ntfy](https://ntfy.sh)
 
 When you reply, it resumes the media it paused. Only that media. If you paused a song yourself, it stays paused.

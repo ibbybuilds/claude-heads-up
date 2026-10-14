@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.4
+
+- Toasts are no longer sticky by default. Set `toast.sticky` to `true` to keep them on screen
+
 ## v0.1.3
 
 - Toasts no longer stack: a new alert replaces the session's old toast, and replying in that session removes it

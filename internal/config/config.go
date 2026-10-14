@@ -71,7 +71,7 @@ func Default() Config {
 		Media:           Toggle{Enabled: true},
 		Sound:           Sound{Enabled: true},
 		Focus:           Toggle{Enabled: true},
-		Toast:           Toast{Enabled: true, Sticky: true},
+		Toast:           Toast{Enabled: true},
 		Ntfy:            Ntfy{Server: defaultServer, Priority: "urgent"},
 	}
 }

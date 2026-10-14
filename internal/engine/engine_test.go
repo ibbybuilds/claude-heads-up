@@ -322,15 +322,15 @@ func TestSoundAndToastSettings(t *testing.T) {
 	if h.p.soundPath != "chime.wav" {
 		t.Errorf("default sound = %q, want the built-in chime", h.p.soundPath)
 	}
-	if !h.p.toast.Sticky || h.p.toast.Title != "my-app" {
-		t.Errorf("toast = %+v", h.p.toast)
+	if h.p.toast.Sticky || h.p.toast.Title != "my-app" {
+		t.Errorf("toast = %+v, want a normal toast by default", h.p.toast)
 	}
 
 	h = newHarness(t)
 	h.e.Config.Sound.File = "custom.wav"
-	h.e.Config.Toast.Sticky = false
+	h.e.Config.Toast.Sticky = true
 	h.e.Alert(context.Background(), stop("a"), false)
-	if h.p.soundPath != "custom.wav" || h.p.toast.Sticky {
+	if h.p.soundPath != "custom.wav" || !h.p.toast.Sticky {
 		t.Errorf("sound=%q toast=%+v", h.p.soundPath, h.p.toast)
 	}
 }

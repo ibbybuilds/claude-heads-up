@@ -26,7 +26,7 @@ You only need the keys you want to change. Anything you leave out keeps its defa
   "media": { "enabled": true },
   "sound": { "enabled": true, "file": "" },
   "focus": { "enabled": true },
-  "toast": { "enabled": true, "sticky": true },
+  "toast": { "enabled": true, "sticky": false },
   "ntfy": {
     "enabled": false,
     "server": "https://ntfy.sh",
@@ -59,7 +59,7 @@ You only need the keys you want to change. Anything you leave out keeps its defa
 
 Each Claude session has at most one toast. A new alert replaces it, and replying in that session removes it.
 
-`toast.sticky` keeps the toast on screen until you close it or reply. Set it to `false` for a normal toast that slides away.
+`toast.sticky` keeps the toast on screen until you close it or reply. Off by default, so the toast slides away like any other notification.
 
 `ntfy.enabled` sends a push to your phone. Needs `topic`.
 
