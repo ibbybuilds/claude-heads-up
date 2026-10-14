@@ -1,6 +1,11 @@
 # Changelog
 
-## Unreleased
+## v0.1.1
+
+- Install over HTTPS, so users without a GitHub SSH key can install
+- Log one line per alert and resume, so the log shows that hooks run
+
+## v0.1.0
 
 - Windows backend: pause and resume media through the system media API, play the notification sound, focus the Claude window, show a toast
 - Built-in attention chime as the default sound

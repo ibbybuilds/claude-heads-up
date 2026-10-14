@@ -71,6 +71,7 @@ func (e *Engine) Alert(ctx context.Context, ev hookinput.Event, force bool) {
 	}
 
 	title, body := ev.Project(), ev.Reason()
+	log.Info("alert", "project", title, "reason", body)
 
 	if e.Config.Media.Enabled {
 		e.step(ctx, log, "pause media", mediaTimeout, func(ctx context.Context) error {
@@ -129,6 +130,7 @@ func (e *Engine) Resume(ctx context.Context, ev hookinput.Event) {
 	if len(media) == 0 {
 		return
 	}
+	log.Info("resume", "media", len(media))
 	e.step(ctx, log, "resume media", mediaTimeout, func(ctx context.Context) error {
 		return e.Platform.ResumeMedia(ctx, media)
 	})
