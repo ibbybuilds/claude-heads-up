@@ -12,8 +12,8 @@
       "description": "Pauses your video and brings Claude Code to the front when it needs you, then resumes when you reply.",
       "category": "productivity",
       "source": {
-        "source": "github",
-        "repo": "ibbybuilds/claude-heads-up",
+        "source": "url",
+        "url": "https://github.com/ibbybuilds/claude-heads-up.git",
         "ref": "release"
       },
       "homepage": "https://github.com/ibbybuilds/claude-heads-up"
