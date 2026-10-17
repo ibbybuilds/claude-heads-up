@@ -22,6 +22,18 @@ jobs:
           go-version-file: go.mod
       - run: go vet ./...
       - run: go test -race ./...
+      - name: macOS media script smoke test
+        if: runner.os == 'macOS'
+        # No players run on the CI runner, so the real osascript must return
+        # an empty list. Proves macOS parses the script and the "not running"
+        # path works without any permission prompt.
+        run: |
+          out="$(osascript -l JavaScript internal/platform/darwin/media.js pause '[]')"
+          echo "pause -> $out"
+          test "$out" = "[]"
+          out="$(osascript -l JavaScript internal/platform/darwin/media.js resume '[{"app":"Spotify","title":""}]')"
+          echo "resume -> $out"
+          test "$out" = "[]"
 
   lint:
     runs-on: ubuntu-latest

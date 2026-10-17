@@ -16,15 +16,17 @@ Inspired by [SnapBack](https://github.com/teoobarca/snapback), which does this o
 
 ## Platform support
 
-| | Windows 10/11 | macOS | Linux |
+| | Windows 10/11 | macOS (beta) | Linux |
 |---|---|---|---|
-| Pause and resume media | yes | planned | planned |
-| Sound | yes | planned | planned |
-| Focus Claude window | yes | planned | planned |
-| Toast | yes | planned | planned |
+| Pause and resume media | any app in the media flyout | Spotify, Apple Music, Safari, Chromium browsers | planned |
+| Sound | yes | yes | planned |
+| Focus Claude window | yes | yes | planned |
+| Toast | yes, one per session | yes | planned |
 | Phone push (ntfy) | yes | yes | yes |
 
-The core is OS-independent. Each OS is one folder under `internal/platform/`. See [adding a platform](docs/adding-a-platform.md) if you want to help with macOS or Linux.
+macOS support is new and has only run in CI so far. If something doesn't work on your Mac, please [open an issue](https://github.com/ibbybuilds/claude-heads-up/issues) with the output of `heads-up doctor` and the log.
+
+The core is OS-independent. Each OS is one folder under `internal/platform/`. See [adding a platform](docs/adding-a-platform.md) if you want to help with Linux.
 
 ## Install
 
@@ -38,6 +40,20 @@ In Claude Code:
 Restart Claude Code. That's it. No config needed.
 
 Windows needs [Git for Windows](https://git-scm.com/download/win), because Claude Code runs plugin hooks through Git Bash. Claude Code itself recommends it, so you probably have it already.
+
+### macOS setup
+
+macOS asks for two permissions the first time an alert fires. Allow both, for whichever app you run Claude Code in (Terminal, iTerm, VS Code or Claude):
+
+1. **Automation for System Events.** Used to find and focus the Claude window.
+2. **Notifications for Script Editor.** macOS shows the toasts under that name.
+
+Media control works through AppleScript, because macOS has no public system-wide media API:
+
+- Spotify and Apple Music work with no setup.
+- Browsers need one switch so the tool can pause the video in a tab. In Chrome, Brave, Edge, Arc or Vivaldi, turn on View > Developer > Allow JavaScript from Apple Events. In Safari, turn on Settings > Advanced > Show features for web developers, then Develop > Allow JavaScript from Apple Events.
+
+On macOS the toast can't be replaced or removed later, so each alert adds one to Notification Center.
 
 ## What triggers an alert
 
@@ -77,13 +93,13 @@ Optional. Create the file with every default filled in:
 heads-up config init
 ```
 
-It lives at `%APPDATA%\claude-heads-up\config.json` on Windows. See [docs/config.md](docs/config.md) for every option.
+It lives at `%APPDATA%\claude-heads-up\config.json` on Windows and `~/Library/Application Support/claude-heads-up/config.json` on macOS. See [docs/config.md](docs/config.md) for every option.
 
 The `heads-up` binary is inside the plugin folder. `heads-up config path` prints the config location, and `heads-up doctor` checks your setup.
 
 ## Troubleshooting
 
-Run `heads-up test` to fire an alert right now, and `heads-up doctor` to see what it detected. Logs go to `%LOCALAPPDATA%\claude-heads-up\heads-up.log`. Set `HEADS_UP_DEBUG=1` for verbose logs.
+Run `heads-up test` to fire an alert right now, and `heads-up doctor` to see what it detected. Logs go to `%LOCALAPPDATA%\claude-heads-up\heads-up.log` on Windows and `~/Library/Caches/claude-heads-up/heads-up.log` on macOS. Set `HEADS_UP_DEBUG=1` for verbose logs.
 
 More in [docs/troubleshooting.md](docs/troubleshooting.md).
 
@@ -92,6 +108,8 @@ More in [docs/troubleshooting.md](docs/troubleshooting.md).
 Claude Code runs the plugin's hooks in the background, so they never slow Claude down. Each hook calls a small Go binary. The binary reads the event, decides whether to alert, and calls the OS backend.
 
 On Windows, media control goes through the same system media API that powers the volume flyout. Every browser tab and app that shows up there can be paused, with no per-browser code. The backend talks to that API through Windows PowerShell 5.1, which ships with Windows.
+
+On macOS, everything goes through tools that ship with the OS: `ps` to walk the process tree, `afplay` for sound, and `osascript` running JavaScript for Automation for focus, notifications and media. No cgo, no extra installs.
 
 The [design doc](docs/specs/2026-10-09-design.md) has the full picture.
 

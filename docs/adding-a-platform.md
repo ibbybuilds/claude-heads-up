@@ -11,15 +11,18 @@ type Platform interface {
 	PauseMedia(ctx context.Context) ([]MediaSession, error)
 	ResumeMedia(ctx context.Context, sessions []MediaSession) error
 	PlaySound(ctx context.Context, path string) error
-	Toast(ctx context.Context, title, body string) error
+	Toast(ctx context.Context, n Notification) error
+	ClearToast(ctx context.Context, id string) error
 }
 ```
 
-macOS and Linux already have stub packages that embed `platform.Unsupported`, so every method returns `ErrUnsupported` and the engine skips that step. You can replace the stub methods one at a time. Each one you implement is a feature that starts working.
+Windows and macOS are implemented. Linux is a stub package that embeds `platform.Unsupported`, so every method returns `ErrUnsupported` and the engine skips that step. You can replace the stub methods one at a time. Each one you implement is a feature that starts working.
+
+The macOS backend in `internal/platform/darwin` is the best template for a new port. It shells out to OS tools through one injectable `runner` function, so its tests fake every command and run on any OS.
 
 ## Steps
 
-1. Open `internal/platform/darwin` or `internal/platform/linux`.
+1. Open `internal/platform/linux`.
 2. Implement a method on `Backend`. The embedded `Unsupported` method stops being used as soon as yours exists.
 3. Put OS-only code in files with a build tag (`//go:build darwin`) so the package still compiles on other systems in CI.
 4. Update the support table in the README.
@@ -34,6 +37,8 @@ macOS and Linux already have stub packages that embed `platform.Unsupported`, so
 `PauseMedia` must pause only what is playing and return exactly that. `ResumeMedia` must touch only those sessions. Never toggle play/pause blindly, or you will start media the user paused on purpose.
 
 `PlaySound("")` plays the system's default alert sound. It may block until the sound ends, because the process exits right after the alert and would cut it off.
+
+`Toast` should replace an earlier toast with the same `Notification.ID`, and `ClearToast(id)` should remove it. Return `ErrUnsupported` from `ClearToast` if the OS can't do that.
 
 Every method gets a context with a timeout. Respect it.
 

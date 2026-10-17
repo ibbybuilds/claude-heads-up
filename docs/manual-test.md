@@ -27,3 +27,17 @@ Then point a Claude Code session at the repo as a plugin (see CONTRIBUTING.md).
 - [ ] ntfy push arrives on the phone
 - [ ] `heads-up doctor` shows the right host process
 - [ ] Delete the config, put invalid JSON in it: Claude Code still works, doctor reports it
+
+## macOS
+
+- [ ] First alert asks for Automation (System Events) and Notifications permission
+- [ ] Spotify: alert pauses it, reply resumes it
+- [ ] Apple Music: same
+- [ ] YouTube in Chrome or Brave with "Allow JavaScript from Apple Events" on: same
+- [ ] Same browser with the setting off: no error for the user, other steps still run
+- [ ] Safari with the Develop setting on: same as Chrome
+- [ ] Pause a Spotify song yourself, trigger an alert, reply: it stays paused
+- [ ] Chime plays
+- [ ] Focus brings Terminal, iTerm, VS Code and the Claude app to the front
+- [ ] Toast shows project name and reason
+- [ ] `heads-up doctor` shows `darwin (beta)` and the right host pid

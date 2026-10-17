@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.2.0
+
+- macOS backend (beta): chime through `afplay`, notifications, window focus through System Events, and media pause/resume for Spotify, Apple Music, Safari and Chromium browsers through AppleScript
+- CI runs the real macOS media script on a macOS runner
+
 ## v0.1.4
 
 - Toasts are no longer sticky by default. Set `toast.sticky` to `true` to keep them on screen

@@ -7,7 +7,7 @@ heads-up doctor   # what it detected, where the config and log are
 heads-up test     # fire an alert now, ignoring triggers and focus
 ```
 
-Logs go to `%LOCALAPPDATA%\claude-heads-up\heads-up.log` on Windows. Set `HEADS_UP_DEBUG=1` before starting Claude Code to log every step.
+Logs go to `%LOCALAPPDATA%\claude-heads-up\heads-up.log` on Windows and `~/Library/Caches/claude-heads-up/heads-up.log` on macOS. Set `HEADS_UP_DEBUG=1` before starting Claude Code to log every step.
 
 ## Nothing happens at all
 
@@ -30,6 +30,16 @@ Chromium browsers (Chrome, Brave, Edge) report one active media session per brow
 Only a reply in the same Claude session resumes the media. If you replied in a different session, the video stays paused on purpose.
 
 Declining a permission request fires no hook, so the media stays paused until your next message.
+
+## macOS: video doesn't pause
+
+Only Spotify, Apple Music, Safari and Chromium browsers (Chrome, Brave, Edge, Arc, Vivaldi) can be controlled. Firefox has no AppleScript support for this.
+
+For browsers, "Allow JavaScript from Apple Events" must be on (see the README). Without it macOS refuses to run the pause script in the tab, and the tool skips that browser.
+
+## macOS: nothing focuses, or System Events errors in the log
+
+Open System Settings > Privacy & Security > Automation, find the app you run Claude Code in, and allow System Events.
 
 ## Window doesn't come to the front
 

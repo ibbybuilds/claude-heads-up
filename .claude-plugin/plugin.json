@@ -9,5 +9,5 @@
   "homepage": "https://github.com/ibbybuilds/claude-heads-up",
   "repository": "https://github.com/ibbybuilds/claude-heads-up",
   "license": "MIT",
-  "keywords": ["notifications", "focus", "media", "attention", "hooks", "windows"]
+  "keywords": ["notifications", "focus", "media", "attention", "hooks", "windows", "macos"]
 }
